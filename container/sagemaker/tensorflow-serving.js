@@ -73,6 +73,14 @@ function tfs_json_request(r, json) {
 
     function callback (reply) {
         var body = reply.responseBody
+
+        var accept = r.headersIn['Accept']
+        if (accept == 'application/jsonlines') {
+            // for jsonlines return the json object on a single line
+            var json_body = JSON.parse(body)
+            body = JSON.stringify(json_body)
+        }
+
         if (reply.status == 400) {
             // "fix" broken json escaping in \'instances\' message
             body = body.replace("\\'instances\\'", "'instances'")
